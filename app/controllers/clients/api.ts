@@ -1,7 +1,7 @@
 import { IApiConfig, ApiMethod, uriType, apiHandler } from '../types'
 import { Request, Response } from 'express'
 
-import { saveUser } from './api-actions'
+import { saveClient } from './api-actions'
 
 const createApiHandler = (
 	method: ApiMethod,
@@ -9,21 +9,24 @@ const createApiHandler = (
 	handler: apiHandler
 ) => ({ method, uri, handler })
 
-export const userApiConfig: IApiConfig[] = [
-	createApiHandler('get', '/users', (req: Request, res: Response) => {
+export const clientApiConfig: IApiConfig[] = [
+	createApiHandler('get', '/clients', (req: Request, res: Response) => {
 		// here we will have logic to return all users
 	}),
 
-	createApiHandler('get', '/users/:id', (req: Request, res: Response) => {
+	createApiHandler('get', '/clients/:id', (req: Request, res: Response) => {
 		// here we will have logic to return all users
 	}),
 
 	createApiHandler(
 		'post',
-		'/users/add',
+		'/clients/add',
 		async (req: Request, res: Response) => {
-			const user = await saveUser(req.body)
-			res.send(user)
+			const user = await saveClient(req.body)
+			res.send({
+				...user,
+				saved: true,
+			})
 		}
 	),
 
@@ -31,7 +34,7 @@ export const userApiConfig: IApiConfig[] = [
 		'put',
 		'/users/:id',
 		async (req: Request, res: Response) => {
-			const user = await saveUser(req.body)
+			const user = await saveClient(req.body)
 			res.send(user)
 		}
 	),

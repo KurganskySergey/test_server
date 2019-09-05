@@ -10,12 +10,6 @@ import {
 
 @Entity('client')
 export class Client extends BaseEntity {
-	// @ts-ignore
-	constructor(a) {
-		// @ts-ignore
-		super(a)
-		debugger
-	}
 	@PrimaryGeneratedColumn()
 	public id: number
 
@@ -48,7 +42,7 @@ export class Client extends BaseEntity {
 		type: 'varchar',
 	})
 	public email: string
+}
 
 	// @OneToMany(type => Car, car => car.owner)
 	// cars: Car[];
-}

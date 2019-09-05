@@ -1,15 +1,56 @@
-import { MigrationInterface, QueryRunner } from 'typeorm'
+import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
 export class initDb1567454157960 implements MigrationInterface {
 	async up(queryRunner: QueryRunner): Promise<any> {
 		await queryRunner.query('BEGIN TRANSACTION')
-		await queryRunner.query(
-			'CREATE TABLE "user" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar NOT NULL, "last_name" varchar NOT NULL, "birthday" integer NOT NULL, "address" varchar NOT NULL, "phone" varchar NOT NULL, email" varchar NOT NULL)'
+		await queryRunner.createTable(
+			new Table({
+				name: 'client',
+				columns: [
+					{
+						name: 'id',
+						type: 'int',
+						isGenerated: true,
+						isPrimary: true,
+					},
+					{
+						name: 'first_name',
+						type: 'varchar',
+						isNullable: false
+					},
+					{
+						name: 'last_name',
+						type: 'varchar',
+						isNullable: false
+					},
+					{
+						name: 'birthday',
+						type: 'int',
+						isNullable: false
+					},
+					{
+						name: 'address',
+						type: 'varchar',
+						isNullable: false
+					},
+					{
+						name: 'phone',
+						type: 'varchar',
+						isNullable: false
+					},
+					{
+						name: 'email',
+						type: 'varchar',
+						isNullable: false
+					}
+				],
+			}),
+			true
 		)
 		await queryRunner.query('COMMIT')
 	}
 
 	async down(queryRunner: QueryRunner): Promise<any> {
-		await queryRunner.dropTable("user");
+		await queryRunner.dropTable('client')
 	}
 }
