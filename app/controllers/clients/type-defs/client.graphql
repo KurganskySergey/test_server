@@ -1,0 +1,43 @@
+# https://devhints.io/graphql#schema
+type Query {
+	hello: String
+	clients: [Client!]!
+	client(id: ID!): Client
+}
+
+type Client {
+	id: ID!
+	first_name: String
+	last_name: String
+	birthday: Int
+	address: String
+	phone: String
+	email: String
+	"""
+	the list of Posts by this author
+	"""
+	cars: [Car]
+}
+
+type Car {
+	id: ID!
+	title: String
+	make: String
+	orders: Order
+}
+
+type Order {
+	id: ID!
+	title: String
+}
+
+# this schema allows the following mutation:
+# https://www.apollographql.com/docs/tutorial/schema/#mutation-type
+type Mutation {
+	saveClient(Id: ID): ClientUpdResponse
+}
+
+type ClientUpdResponse {
+	success: Boolean!
+	message: String
+}

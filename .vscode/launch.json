@@ -24,10 +24,13 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\index.ts",
+            "program": "${workspaceFolder}\\index.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
-            ]
+            ],
+            "env": {
+                "NODE_ENV": "test"
+            },
         },
         {
             "name": "Node Inspector",
