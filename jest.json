@@ -1,9 +1,0 @@
-{
-    "transform": {
-        "^.+\\.[t|j]sx?$": "babel-jest"
-    },
-    "globals": {
-        "__DEV__": true,
-        "NODE_ENV": true
-    }
-}

@@ -1,28 +1,30 @@
-import 'reflect-metadata'
+import { ApolloServer } from 'apollo-server-express'
 import * as bodyParser from 'body-parser'
 import express, { Express, NextFunction, Request, Response } from 'express'
+import 'reflect-metadata'
 import { config } from '../config'
-import { handleApiRequests } from './controllers/api'
+import { resolvers } from './controllers/resolvers'
+import { typeDefs } from './controllers/type-defs'
 import { connectDb } from './db'
 
 export const createServer = async (cfg: typeof config) => {
 	await connectDb()
-	await new Promise(res => setTimeout(res, 2000))
 	const app = init()
-	handleAPI(app)
 	handleError(app)
-	app.get('/', (req, res) => res.send('Hello World!'))
 	return app
 }
 
 export const init = () => {
+	const server = new ApolloServer({
+		resolvers,
+		typeDefs,
+		introspection: true,
+		playground: true,
+	})
 	const app = express()
 	app.use(bodyParser.json())
+	server.applyMiddleware({ app })
 	return app
-}
-
-const handleAPI = (app: Express) => {
-	handleApiRequests(app)
 }
 
 const handleError = (app: Express) => {

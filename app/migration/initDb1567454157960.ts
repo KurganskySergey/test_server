@@ -16,33 +16,43 @@ export class initDb1567454157960 implements MigrationInterface {
 					{
 						name: 'first_name',
 						type: 'varchar',
-						isNullable: false
+						isNullable: false,
 					},
 					{
 						name: 'last_name',
 						type: 'varchar',
-						isNullable: false
+						isNullable: false,
 					},
 					{
 						name: 'birthday',
 						type: 'int',
-						isNullable: false
+						isNullable: false,
 					},
 					{
 						name: 'address',
 						type: 'varchar',
-						isNullable: false
+						isNullable: false,
 					},
 					{
 						name: 'phone',
 						type: 'varchar',
-						isNullable: false
+						isNullable: false,
 					},
 					{
 						name: 'email',
 						type: 'varchar',
-						isNullable: false
-					}
+						isNullable: false,
+					},
+					{
+						name: 'created_at',
+						type: 'int',
+						isNullable: false,
+					},
+					{
+						name: 'updated_at',
+						type: 'int',
+						isNullable: false,
+					},
 				],
 			}),
 			true

@@ -1,7 +1,7 @@
 import {
-	Entity,
 	BaseEntity,
 	Column,
+	Entity,
 	PrimaryGeneratedColumn,
 	// OneToMany,
 	// JoinColumn,
@@ -42,6 +42,16 @@ export class Client extends BaseEntity {
 		type: 'varchar',
 	})
 	public email: string
+
+	@Column({
+		type: 'int',
+	})
+	public created_at: number
+
+	@Column({
+		type: 'int',
+	})
+	public updated_at: number
 }
 
 	// @OneToMany(type => Car, car => car.owner)
