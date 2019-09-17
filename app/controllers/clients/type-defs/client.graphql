@@ -9,7 +9,9 @@ type Client {
 	id: ID!
 	first_name: String
 	last_name: String
-	birthday: Int
+	birthday: Float
+	created_at: Float
+	updated_at: Float
 	address: String
 	phone: String
 	email: String
@@ -33,11 +35,26 @@ type Order {
 
 # this schema allows the following mutation:
 # https://www.apollographql.com/docs/tutorial/schema/#mutation-type
+# https://graphql.org/learn/schema/#input-types
+
+input ClientInp {
+	id: ID
+	first_name: String
+	last_name: String
+	birthday: Float
+	created_at: Float
+	updated_at: Float
+	address: String
+	phone: String
+	email: String
+}
+
 type Mutation {
-	saveClient(Id: ID): ClientUpdResponse
+	saveClient(clientData: ClientInp!): ClientUpdResponse
 }
 
 type ClientUpdResponse {
 	success: Boolean!
 	message: String
+	savedClient: Client
 }

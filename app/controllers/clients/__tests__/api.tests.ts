@@ -7,7 +7,7 @@ import { getTypeORMConn } from '../../../db'
 describe('Clients api:', () => {
 	let app: SuperTest<Test>
 	beforeEach(async done => {
-		app = supertest(await createServer(config))
+		app = supertest(await createServer(config).catch(done))
 		done()
 	})
 
@@ -55,30 +55,55 @@ describe('Clients api:', () => {
 	})
 
 	describe('Mutaion clients', () => {
-		// const userData = {
-		// 	first_name: 'Anna',
-		// 	last_name: '',
-		// 	birthday: Date.now(),
-		// 	address: 'Minsk, Belarus',
-		// 	phone: '+375291111111',
-		// 	email: 'example@example.com',
-		// }
+		const clientData = {
+			first_name: 'Anna',
+			last_name: 'Kurhanskaya',
+			birthday: Date.now(),
+			address: 'Minsk, Belarus',
+			phone: '+375291111111',
+			email: 'example@example.com',
+		}
 		test('should create client', async () => {
 			const response = await app
 				.post('/graphql')
 				.send({
 					query: `
-					query {
-						hello
-					}
+						mutation SaveClient($clientData: ClientInp!) {
+							saveClient(clientData: $clientData) {
+								success
+								message
+								savedClient {
+									id,
+									first_name,
+									last_name,
+									address,
+									email,
+									birthday,
+									phone
+								}
+							}
+						}
 					`,
-					variables: {},
+					variables: {
+						clientData,
+					},
 				})
 				.set('Accept', 'application/graphql')
 
-			debugger
+			if (response.body.errors) {
+				for (const { message } of response.body.errors) {
+					console.error(message)
+				}
+			}
 
-			expect(response.body.data).toEqual({ hello: 'Hello world!' })
+			expect(response.body.data.saveClient).toEqual({
+				success: true,
+				message: 'Client was saved successfully',
+				savedClient: {
+					id: '1',
+					...clientData,
+				},
+			})
 		})
 	})
 })

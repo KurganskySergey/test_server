@@ -24,17 +24,22 @@ export const resolvers = {
 	},
 
 	Mutation: {
-		// upvotePost: (_, { postId }) => {
-		// 	const post = find(posts, { id: postId })
-		// 	if (!post) {
-		// 		throw new Error(`Couldn't find post with id ${postId}`)
-		// 	}
-		// 	post.votes += 1
-		// 	return post
-		// },
-		async saveClient(parent: {}, args: any) {
-			debugger
-			// Client.save()
+		async saveClient(parent: {}, { clientData }: any) {
+			Client.useConnection(await getTypeORMConn())
+			const savedClient = await Client.save({
+				...clientData,
+				...(!clientData.id
+					? { created_at: Date.now(), updated_at: Date.now() }
+					: { updated_at: Date.now() }),
+			})
+
+			return {
+				success: true,
+				message: `Client was ${
+					clientData.id ? 'updated' : 'saved'
+				} successfully`,
+				savedClient,
+			}
 		},
 	},
 
