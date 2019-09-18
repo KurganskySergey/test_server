@@ -1,3 +1,4 @@
+import { map } from 'lodash'
 import { Client } from './../../entity/client'
 import { getTypeORMConn } from '../../db'
 
@@ -8,9 +9,6 @@ interface IFetchClientArgs {
 
 export const resolvers = {
 	Query: {
-		hello: () => {
-			return 'Hello world!'
-		},
 
 		async clients(_: any, { skip, take }: IFetchClientArgs) {
 			Client.useConnection(await getTypeORMConn())
@@ -26,6 +24,14 @@ export const resolvers = {
 	Mutation: {
 		async saveClient(parent: {}, { clientData }: any) {
 			Client.useConnection(await getTypeORMConn())
+			clientData.cars = map(clientData.cars, car => {
+				return {
+					...car,
+					...(!car.id
+						? { created_at: Date.now(), updated_at: Date.now() }
+						: { updated_at: Date.now() }),
+				}
+			})
 			const savedClient = await Client.save({
 				...clientData,
 				...(!clientData.id
@@ -42,12 +48,4 @@ export const resolvers = {
 			}
 		},
 	},
-
-	// Author: {
-	// 	posts: author => filter(posts, { authorId: author.id }),
-	// },
-
-	// Post: {
-	// 	author: post => find(authors, { id: post.authorId }),
-	// },
 }

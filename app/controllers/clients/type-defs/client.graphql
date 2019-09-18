@@ -23,8 +23,10 @@ type Client {
 
 type Car {
 	id: ID!
-	title: String
+	vin: String
+	model: String
 	make: String
+	year: Int
 	orders: Order
 }
 
@@ -47,6 +49,14 @@ input ClientInp {
 	address: String
 	phone: String
 	email: String
+	cars: [CarInput]
+}
+
+input CarInput {
+	model: String
+	make: String
+	vin: String
+	year: Int
 }
 
 type Mutation {

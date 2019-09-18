@@ -4,6 +4,73 @@ import { config } from '../../../../config'
 import { createServer } from '../../..'
 import { getTypeORMConn } from '../../../db'
 
+const requestClient = async (app: any, id?: number) => {
+	const response = await app
+		.post('/graphql')
+		.send({
+			query: `
+			query GetClient($id: ID!){
+				client(id: $id) {
+					id,
+				}
+			}
+			`,
+			variables: { id },
+		})
+		.set('Accept', 'application/graphql')
+
+	return response.body.data
+}
+
+const getAllClients = async (app: any) => {
+	const response = await app
+		.post('/graphql')
+		.send({
+			query: `
+					{
+						clients {
+							id,
+						}
+					}
+					`,
+			variables: {},
+		})
+		.set('Accept', 'application/graphql')
+
+	return response.body.data
+}
+
+const saveClient = async (app: any, clientData: any) => {
+	const response = await app
+		.post('/graphql')
+		.send({
+			query: `
+						mutation SaveClient($clientData: ClientInp!) {
+							saveClient(clientData: $clientData) {
+								success
+								message
+								savedClient {
+									id
+									cars {
+										id
+									}
+								}
+							}
+						}
+					`,
+			variables: {
+				clientData,
+			},
+		})
+		.set('Accept', 'application/graphql')
+
+	if (response.ok) {
+		return response.body.data
+	} else {
+		throw response.error
+	}
+}
+
 describe('Clients api:', () => {
 	let app: SuperTest<Test>
 	beforeEach(async done => {
@@ -18,39 +85,15 @@ describe('Clients api:', () => {
 
 	describe('Query clients', () => {
 		test('should get empty client', async () => {
-			const response = await app
-				.post('/graphql')
-				.send({
-					query: `
-					query GetClient($id: ID!){
-						client(id: $id) {
-							id,
-						}
-					}
-					`,
-					variables: { id: 1 },
-				})
-				.set('Accept', 'application/graphql')
+			const data = await requestClient(app, 1)
 
-			expect(response.body.data).toEqual({ client: null })
+			expect(data).toEqual({ client: null })
 		})
 
 		test('should get empty clients', async () => {
-			const response = await app
-				.post('/graphql')
-				.send({
-					query: `
-					{
-						clients {
-							id,
-						}
-					}
-					`,
-					variables: {},
-				})
-				.set('Accept', 'application/graphql')
+			const data = await getAllClients(app)
 
-			expect(response.body.data).toEqual({ clients: [] })
+			expect(data).toEqual({ clients: [] })
 		})
 	})
 
@@ -62,48 +105,31 @@ describe('Clients api:', () => {
 			address: 'Minsk, Belarus',
 			phone: '+375291111111',
 			email: 'example@example.com',
+			cars: [
+				{
+					model: 'Polo',
+					make: 'VW',
+					year: 2017,
+					vin: 'A2SG45FG123AAS',
+				},
+			],
 		}
+
 		test('should create client', async () => {
-			const response = await app
-				.post('/graphql')
-				.send({
-					query: `
-						mutation SaveClient($clientData: ClientInp!) {
-							saveClient(clientData: $clientData) {
-								success
-								message
-								savedClient {
-									id,
-									first_name,
-									last_name,
-									address,
-									email,
-									birthday,
-									phone
-								}
-							}
-						}
-					`,
-					variables: {
-						clientData,
-					},
-				})
-				.set('Accept', 'application/graphql')
+			const data = await saveClient(app, clientData)
 
-			if (response.body.errors) {
-				for (const { message } of response.body.errors) {
-					console.error(message)
-				}
-			}
-
-			expect(response.body.data.saveClient).toEqual({
+			expect(data.saveClient).toEqual({
 				success: true,
 				message: 'Client was saved successfully',
 				savedClient: {
 					id: '1',
-					...clientData,
+					cars: [{ id: 1 }],
 				},
 			})
+
+			const { client } = await requestClient(app, 1)
+
+			expect(client).toEqual({ id: '1' })
 		})
 	})
 })

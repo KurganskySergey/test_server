@@ -3,10 +3,10 @@ import {
 	Column,
 	Entity,
 	PrimaryGeneratedColumn,
-	// OneToMany,
+	OneToMany,
 	// JoinColumn,
 } from 'typeorm'
-// import { Car } from '../cars'
+import { Car } from './car'
 
 @Entity('client')
 export class Client extends BaseEntity {
@@ -52,7 +52,10 @@ export class Client extends BaseEntity {
 		type: 'int',
 	})
 	public updated_at: number
-}
 
-	// @OneToMany(type => Car, car => car.owner)
-	// cars: Car[];
+	@OneToMany(type => Car, car => car.owner, {
+		cascade: true,
+		eager: true,
+	})
+	public cars: Car[]
+}
