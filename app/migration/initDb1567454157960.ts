@@ -1,23 +1,19 @@
-import {
-	MigrationInterface,
-	QueryRunner,
-	Table,
-	TableColumn,
-	TableForeignKey,
-} from 'typeorm'
+import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
 export class initDb1567454157960 implements MigrationInterface {
 	async up(queryRunner: QueryRunner): Promise<any> {
 		await queryRunner.query('BEGIN TRANSACTION')
+
 		await queryRunner.createTable(
 			new Table({
 				name: 'client',
 				columns: [
 					{
 						name: 'id',
-						type: 'int',
+						type: 'integer',
 						isGenerated: true,
 						isPrimary: true,
+						generationStrategy: 'increment',
 					},
 					{
 						name: 'first_name',
@@ -70,9 +66,10 @@ export class initDb1567454157960 implements MigrationInterface {
 				columns: [
 					{
 						name: 'id',
-						type: 'int',
+						type: 'integer',
 						isGenerated: true,
 						isPrimary: true,
+						generationStrategy: 'increment',
 					},
 					{
 						name: 'make',
@@ -94,28 +91,36 @@ export class initDb1567454157960 implements MigrationInterface {
 						type: 'varchar',
 						isNullable: false,
 					},
+					{
+						name: 'created_at',
+						type: 'int',
+						isNullable: false,
+					},
+					{
+						name: 'updated_at',
+						type: 'int',
+						isNullable: false,
+					},
+					{
+						name: 'clientId',
+						type: 'integer',
+						isNullable: true,
+					},
+				],
+				foreignKeys: [
+					{
+						name: 'car',
+						columnNames: ['clientId'],
+						referencedTableName: 'client',
+						referencedColumnNames: ['id'],
+						onDelete: 'NO ACTION',
+						onUpdate: 'NO ACTION',
+					},
 				],
 			}),
+			true,
+			true,
 			true
-		)
-
-		await queryRunner.addColumn(
-			'car',
-			new TableColumn({
-				name: 'clientId',
-				type: 'int',
-			})
-		)
-
-		await queryRunner.createForeignKey(
-			'car',
-			new TableForeignKey({
-				columnNames: ['clientId'],
-				referencedColumnNames: ['id'],
-				referencedTableName: 'client',
-				onDelete: 'CASCADE',
-				onUpdate: 'CASCADE',
-			})
 		)
 
 		await queryRunner.query('COMMIT')

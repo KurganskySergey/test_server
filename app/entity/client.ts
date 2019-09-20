@@ -53,8 +53,8 @@ export class Client extends BaseEntity {
 	})
 	public updated_at: number
 
-	@OneToMany(type => Car, car => car.owner, {
-		cascade: true,
+	@OneToMany(type => Car, car => car.client, {
+		cascade: ['insert', 'update', 'remove'],
 		eager: true,
 	})
 	public cars: Car[]

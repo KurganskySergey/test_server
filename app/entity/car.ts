@@ -3,14 +3,25 @@ import {
 	Column,
 	Entity,
 	PrimaryGeneratedColumn,
-    ManyToOne,
+	ManyToOne,
 	// OneToMany,
 	// JoinColumn,
 } from 'typeorm'
-import { Client } from './client';
+import { Client } from './client'
 
 @Entity('car')
 export class Car extends BaseEntity {
+	constructor(props: Car = {} as Car) {
+		super()
+		this.id = props.id
+		this.make = props.make
+		this.model = props.model
+		this.vin = props.vin
+		this.year = props.year
+		this.created_at = props.id ? props.created_at : Date.now()
+		this.updated_at = Date.now()
+	}
+
 	@PrimaryGeneratedColumn()
 	public id: number
 
@@ -34,7 +45,6 @@ export class Car extends BaseEntity {
 	})
 	public year: string
 
-
 	@Column({
 		type: 'int',
 	})
@@ -43,8 +53,8 @@ export class Car extends BaseEntity {
 	@Column({
 		type: 'int',
 	})
-    public updated_at: number
+	public updated_at: number
 
 	@ManyToOne(type => Client, client => client.cars)
-	public owner: Client;
+	public client: Client
 }

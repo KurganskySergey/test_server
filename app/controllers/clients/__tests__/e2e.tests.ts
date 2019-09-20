@@ -123,7 +123,7 @@ describe('Clients api:', () => {
 				message: 'Client was saved successfully',
 				savedClient: {
 					id: '1',
-					cars: [{ id: 1 }],
+					cars: [{ id: '1' }],
 				},
 			})
 
